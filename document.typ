@@ -6,7 +6,7 @@
   footer: [Supervision Application-X — Utilisateurs impactés — 04 au 07/05/2026],
 )
 
-#set text(lang: "fr", font: "Inter", size: 22pt)
+#set text(lang: "fr", font: "Inter", size: 18pt)
 #show heading: set text(weight: "semibold")
 
 // ─────────────────────────────────────────────────────────
@@ -97,6 +97,7 @@ si on les contacte directement.
 // ─────────────────────────────────────────────────────────
 == Utilisateurs impactés — détail
 
+#[
 #set text(size: 15pt)
 #table(
   columns: (1.6fr, auto, auto, auto, auto, 1.6fr),
@@ -111,6 +112,7 @@ si on les contacte directement.
   [`utilisateur05@organisation-c.exemple`], [131], [2], [1 %], [🟡], [Autocomplete Lieu ponctuel],
   [`utilisateur06@organisation-c.exemple`], [43], [1], [1 %], [🟡], [Autocomplete commune],
 )
+]
 
 // ─────────────────────────────────────────────────────────
 // Incident 1 — ROR
@@ -139,7 +141,6 @@ n'utilise pas la fonction → invisible pour eux.
 // ─────────────────────────────────────────────────────────
 == Remédiation #1 — ROR API
 
-#set text(size: 18pt)
 #grid(
   columns: (1fr, 1fr, 1fr),
   column-gutter: 1em,
@@ -175,8 +176,8 @@ n'utilise pas la fonction → invisible pour eux.
 )
 
 #v(0.5em)
-#set text(size: 16pt)
-*Effort cumulé* : 30 min – 2 h diagnostic + 20 min UX + 1 h résilience.
+#text(size: 14pt)[*Effort cumulé* : 30 min – 2 h diagnostic + 20 min UX + 1 h résilience.]
+
 
 // ─────────────────────────────────────────────────────────
 // Incident 2 — CHU Dijon
@@ -204,7 +205,6 @@ bloque `applicationx-back-prod.azurewebsites.net`.
 // ─────────────────────────────────────────────────────────
 == Remédiation #2 — Accompagnement utilisatrice
 
-#set text(size: 18pt)
 #grid(
   columns: (1fr, 1fr),
   column-gutter: 1.5em,
@@ -239,30 +239,49 @@ bloque `applicationx-back-prod.azurewebsites.net`.
 // ─────────────────────────────────────────────────────────
 == Incidents secondaires
 
-#set text(size: 18pt)
-*🟠 Export PDF rapport PBI* — `utilisateur04@organisation-d.exemple`
-- 3 échecs sur `/v1/Analyses/ExportPDF`
-- Cause : capacité PBI en `Resuming` + secret KeyVault `lea-pbi-client-export-id` 404
-- *Remédiation* : aligner nom du secret (~10 min), pré-réveil CRON capacité PBI (~1 h)
-
-#v(0.7em)
-*🟠 Reset mot de passe utilisateur* — `Utilisateur02@organisation-b.exemple`
-- `POST /EntraIdUsers/{id}/require-password-change` → 400 (Graph 403)
-- Cause : permission Graph `User.ReadWrite.All` manquante
-- *Remédiation* : ajouter la permission sur l'app registration (~15 min)
-
-#v(0.7em)
-*🟡 Doublons utilisateurs* — claim `preferred_username` en casse variable
-- `utilisateur02` et `Utilisateur02` apparaissent comme 2 users distincts
-- Pas bloquant, mais fausse les agrégats
-- *Remédiation* : `SetAuthenticatedUserContext(email.ToLowerInvariant())` dans `App.razor` (~10 min)
+#grid(
+  columns: (1fr, 1fr, 1fr),
+  column-gutter: 1em,
+  [
+    #box(fill: rgb("#fef3c7"), inset: 10pt, radius: 6pt, width: 100%)[
+      #text(size: 14pt)[
+      *🟠 Export PDF PBI* \
+      `utilisateur04@organisation-d`
+      - 3 échecs sur `ExportPDF`
+      - Cause : capacité PBI `Resuming` + secret KeyVault `lea-pbi-client-export-id` 404
+      - *Fix* : aligner secret (~10 min), pré-réveil CRON (~1 h)
+      ]
+    ]
+  ],
+  [
+    #box(fill: rgb("#fef3c7"), inset: 10pt, radius: 6pt, width: 100%)[
+      #text(size: 14pt)[
+      *🟠 Reset mot de passe* \
+      `Utilisateur02@organisation-b`
+      - `require-password-change` → 400 (Graph 403)
+      - Cause : permission Graph `User.ReadWrite.All` manquante
+      - *Fix* : ajouter permission app registration (~15 min)
+      ]
+    ]
+  ],
+  [
+    #box(fill: rgb("#fef9c3"), inset: 10pt, radius: 6pt, width: 100%)[
+      #text(size: 14pt)[
+      *🟡 Doublons utilisateurs* \
+      claim casse variable
+      - `utilisateur02` ≠ `Utilisateur02` dans agrégats
+      - Pas bloquant, fausse stats
+      - *Fix* : `email.ToLowerInvariant()` dans `App.razor` (~10 min)
+      ]
+    ]
+  ],
+)
 
 // ─────────────────────────────────────────────────────────
 // Distribution par établissement
 // ─────────────────────────────────────────────────────────
 == Distribution par établissement
 
-#set text(size: 17pt)
 #table(
   columns: (1.5fr, auto, auto, 1.5fr),
   align: (left, right, right, left),
@@ -286,7 +305,6 @@ n'utilise probablement pas cette fonction — d'où 0 erreur.
 // ─────────────────────────────────────────────────────────
 == Stratégies de remédiation transverses
 
-#set text(size: 18pt)
 *🛡️ Résilience applicative*
 - Circuit breaker Polly sur les dépendances externes (ROR, Graph, PBI)
 - Fallback UX : message "service tiers indisponible" plutôt que 500 brut
@@ -309,7 +327,8 @@ n'utilise probablement pas cette fonction — d'où 0 erreur.
 // ─────────────────────────────────────────────────────────
 == Plan d'action priorisé
 
-#set text(size: 15pt)
+#[
+#set text(size: 14pt)
 #table(
   columns: (auto, 1.8fr, 1.4fr, auto, auto),
   align: (center, left, left, center, center),
@@ -324,19 +343,17 @@ n'utilise probablement pas cette fonction — d'où 0 erreur.
   [7], [Permission Graph `User.ReadWrite.All`], [feature reset MdP], [15 min], [cette semaine],
   [8], [Capacité PBI : pré-réveil CRON], [export PDF stable], [1 h], [semaine prochaine],
 )
+]
 
 #v(0.5em)
-#set text(size: 16pt)
 #align(center)[
-  *≈ 4 h de travail développeur + 1 message support* — couvre l'ensemble.
+  #text(size: 14pt)[*≈ 4 h de travail développeur + 1 message support* — couvre l'ensemble.]
 ]
 
 // ─────────────────────────────────────────────────────────
 // À retenir
 // ─────────────────────────────────────────────────────────
 == À retenir
-
-#set text(size: 20pt)
 
 1. *3 utilisateurs en souffrance réelle, pas plus* — l'impact est
    concentré et adressable rapidement.
@@ -355,7 +372,7 @@ n'utilise probablement pas cette fonction — d'où 0 erreur.
 
 #v(1em)
 #align(center)[
-  #text(size: 18pt, fill: gray)[
+  #text(size: 14pt, fill: gray)[
     *Prochaine revue* : après diagnostic ROR + contact CHU-Dijon.
   ]
 ]
